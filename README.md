@@ -104,3 +104,12 @@ Greet test: I think it is an important distiction to make here. We don't make th
 
 See the first test in Greet.test.tsx. Not sure this is nessessary ??? The other 2 tests will tell us
 if the type is required but not if the type is optional so maybe it's a good addition? Need to do more testing and looking into. It is kinda nice to
+
+#### simplifying tests
+
+I like to put a vitest-env.d.ts file inside my tests directory to reference vitest/globals types. This way I don't need to add the types option to compiler options in tsconfig so test related things are kept separate from the project. Not sure it there will be issues later but if so I'll change it.
+
+Also, put import for the jest matchers in the setup file so they will be auto imported before every test. We don't do this with render, screen from testing-library/react because there are actual use cases for overwriting these methods in which case we would want to be able to import the ones from testing-library or our overwritten version from different locations for different types of tests.
+https://testing-library.com/docs/react-testing-library/setup/
+
+There is an extension though to make typing the import line easy. It's the testing-library snippets extension by dein software
