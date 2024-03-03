@@ -1,4 +1,8 @@
-const ProductImageGallery = ({ imageUrls }: { imageUrls: string[] }) => {
+type ProductImageGalleryProps = {
+  imageUrls: Array<string>;
+};
+
+const ProductImageGallery = ({ imageUrls }: ProductImageGalleryProps) => {
   if (imageUrls.length === 0) return null;
 
   return (

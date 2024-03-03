@@ -130,3 +130,18 @@ Lots of things to think about here. https://github.com/testing-library/react-tes
 
 https://testing-library.com/docs/queries/about/#priority
 https://kentcdodds.com/blog/common-mistakes-with-react-testing-library
+
+### Testing the ProductImageGallery
+
+There are two forms of loop that can be used here
+
+```js
+for (const [index] of images.entries()) {
+  expect(images[index]).toHaveAttribute("src", imageUrls[index]);
+}
+
+// this second one is slightly cleaner so I went with it in the test
+imageUrls.forEach((url, index) => {
+  expect(images[index]).toHaveAttribute("src", url);
+});
+```
