@@ -1,6 +1,10 @@
 import { User } from "../entities";
 
-const UserList = ({ users }: { users: User[] }) => {
+type UserListProps = {
+  users: Array<User>;
+};
+
+const UserList = ({ users }: UserListProps) => {
   if (users.length === 0) return <p>No users available.</p>;
 
   return (
