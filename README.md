@@ -113,3 +113,20 @@ Also, put import for the jest matchers in the setup file so they will be auto im
 https://testing-library.com/docs/react-testing-library/setup/
 
 There is an extension though to make typing the import line easy. It's the testing-library snippets extension by dein software
+
+### test UserAccount
+
+#### queryByRole vs getByRole
+
+getByRole will throw an error so if you want to make sure something is not in the document use queryByRole and then not.toBeInTheDocument
+
+#### findByText
+
+findByText returns a promise so you have to await it. But this function can be used to find text in the document. In the case of the UserAccount test we can't use getByRole because div and strong by default don't have a role. If we want to be specific we can use testing id's (more later) or
+
+## Side Note on why getByRole vs getById
+
+Lots of things to think about here. https://github.com/testing-library/react-testing-library/issues/683
+
+https://testing-library.com/docs/queries/about/#priority
+https://kentcdodds.com/blog/common-mistakes-with-react-testing-library
