@@ -14,5 +14,22 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    // eslint-testing-library rules
+    "testing-library/await-async-queries": "error",
+    "testing-library/no-await-sync-queries": "error",
+    "testing-library/no-debugging-utils": "warn",
+    "testing-library/no-dom-import": "off",
+    // eslint-jest-dom
+    "jest-dom/prefer-checked": "error",
+    "jest-dom/prefer-enabled-disabled": "error",
+    "jest-dom/prefer-required": "error",
+    "jest-dom/prefer-to-have-attribute": "error",
   },
+  overrides: [
+    {
+      // run only for test files
+      files: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+      extends: ["plugin:testing-library/react", "plugin:jest-dom/recommended"],
+    },
+  ],
 };
