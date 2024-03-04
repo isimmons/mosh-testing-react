@@ -145,3 +145,11 @@ imageUrls.forEach((url, index) => {
   expect(images[index]).toHaveAttribute("src", url);
 });
 ```
+
+### testing user interactions
+
+TermsAndConditions test: We could separate the two sets of assertions in our first test. But in this case, both are part of checking the the proper rendering of the component as a whole and separating them would lead to more unnessessary code duplication. If we specifically wanted to check if there is a checkbox and if there is some text and had a need to test both separately then by all means we could do that. We could even put both separate tests inside a nested desc block to make the separation visually obvious and neatly formatted as part of a single check for correct rendering. desc and it blocks are very flexible that way. But as stated, unnessessary code typing in this case.
+
+In this test we only have 1 button. This is what I don't like about using getByRole without specifying some criteria to mean specifically THIS button and not THAT one in case we were to add another button like in a form with submit and cancel buttons. I prefer to add the name option now so it is future ready and hopefully won't break if we add another button later. Also in this way we don't need to add the additional test toHaveTextContent(/submit/i). Mosh even removes this assertion because as he states, in the future it is possible that this text gets changed.
+
+I'm thinking. If a person on a team is responsible for copy, then maybe the test should fail if they change the text of the button which puts emphasis on double checking the copy and making the test pass before accepting the PR for the change. IDK, just thinking.
