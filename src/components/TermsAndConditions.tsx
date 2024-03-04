@@ -17,12 +17,15 @@ const TermsAndConditions = () => {
             id="agree"
             checked={isChecked}
             onChange={() => setIsChecked(!isChecked)}
-            className="mr-1"
+            className="mr-1  checked:accent-emerald-500"
           />
           I accept the terms and conditions.
         </label>
       </div>
-      <button disabled={!isChecked} className="btn">
+      <button
+        disabled={!isChecked}
+        className="btn disabled:bg-blue-300 disabled:text-slate-300"
+      >
         Submit
       </button>
     </div>
