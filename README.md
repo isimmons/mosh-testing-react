@@ -170,3 +170,8 @@ const button = screen.getByRole("button", { name: /more/i }); // will throw if n
 expect(button).toBeInTheDocument(); // redundant ?
 expect(button).toHaveTextContent(/more/i); // definitely redundant
 ```
+
+#### more simplifying tests
+
+Notice in TermsAndConditions by introducing a factory to render the component and return all of the
+nessessary elements for test, we have greatly simplified the individual test case. As mentioned before, getByRole will throw an error, and each element has at least one test for which we need the element so we can safely remove the toBeInTheDocument assertion from all 3 and the test is still solid and it is still easy to see what we are testing for.
