@@ -153,3 +153,22 @@ TermsAndConditions test: We could separate the two sets of assertions in our fir
 In this test we only have 1 button. This is what I don't like about using getByRole without specifying some criteria to mean specifically THIS button and not THAT one in case we were to add another button like in a form with submit and cancel buttons. I prefer to add the name option now so it is future ready and hopefully won't break if we add another button later. Also in this way we don't need to add the additional test toHaveTextContent(/submit/i). Mosh even removes this assertion because as he states, in the future it is possible that this text gets changed.
 
 I'm thinking. If a person on a team is responsible for copy, then maybe the test should fail if they change the text of the button which puts emphasis on double checking the copy and making the test pass before accepting the PR for the change. IDK, just thinking.
+
+### Testing expandable text
+
+To clear the confusion. lorem100 will generate 100 words which in this case is more than 255 characters (the limit set in our component for truncation). I had to look this up in the [emmet docs](https://docs.emmet.io/abbreviations/lorem-ipsum/#:~:text=lorem%20is%20not%20just%20a,a%20100%2Dwords%20dummy%20text.) to see why and how the component was working with lorem100.
+
+Remember that getByRole will throw an error if element not found so technically we don't have to test
+that the element is toBeInTheDocument(). Also if using the text in our getByRole, then we don't need to test toHaveTextContent either.
+
+For the last test I had copied the previous test and was testing everything up to the point where we actually need to test if the show less button works. This is unnessessary since the previous tests show that everything else works. So I removed all but getting the button so I have something for the user to click on, and assume the longText is present without redundantly testing for it again.
+
+Still not sure if maybe it is still a good thing to include the toBeInTheDocument part here (below) explicitly to make the test clear even though it is not nessessary
+
+```js
+
+```
+
+const button = screen.getByRole("button", { name: /more/i }); // will throw if not found
+expect(button).toBeInTheDocument(); // redundant ?
+expect(button).toHaveTextContent(/more/i); // definitely redundant
