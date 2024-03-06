@@ -166,9 +166,7 @@ For the last test I had copied the previous test and was testing everything up t
 Still not sure if maybe it is still a good thing to include the toBeInTheDocument part here (below) explicitly to make the test clear even though it is not nessessary
 
 ```js
-
-```
-
 const button = screen.getByRole("button", { name: /more/i }); // will throw if not found
 expect(button).toBeInTheDocument(); // redundant ?
 expect(button).toHaveTextContent(/more/i); // definitely redundant
+```
