@@ -195,3 +195,25 @@ I feel better after googling. I is not alone... I think I could actually do a pr
 As Mosh brings up and is also in the artilcle I linked above by Kent C Dodds, side effects should NOT be included in the callback for waitFor. In this case the render function is the side effect. Other example in Kent's article. We don't want the side effect to be called multiple times which is what waitFor does with the callback. Also we should have a single assertion inside the callback. Once we have awaited for example an assertion that foo is in the document, then outside and after the waitFor, we can assert everything else that relies on the existense of foo in the document.
 
 Avoid the complexity when waitFor is not needed. Also mentioned by both Kent and Mosh is the fact that findBy* functions use waitFor under the hood. But they are much simpler to write and provide better error messages when there is an error. So prefer to use findBy* methods over waitFor when waitFor is not needed. Examples later in course where waitFor makes sense.
+
+### more async ToastDemo
+
+This would typically be a submit button or some other action creating a toast but for test practice we'll pretend it will always have the word 'toast' as it's accessible text content since I am trying to create strict practice of letting getByRole encourage accessibility.
+
+#### issue 821 matchMedia
+
+Explaination is that jsdom does not have matchMedia so we have to define it
+[issue # 821](https://github.com/vitest-dev/vitest/issues/821)
+Placed the Define.object code in our setup.ts file and it fixes the issue
+
+Research needed to understand why this became an issue here. Exaclty who is trying to call matchMedia and when in our test. Is it jsdom or the toast lib or what? I'll need to back up and remove things until it stops erroring and read up on [MDN matchMedia](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia)
+
+[more info and jest docs workaround here](https://stackoverflow.com/questions/39830580/jest-test-fails-typeerror-window-matchmedia-is-not-a-function)
+
+[jest docs](https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom)
+
+Ha! so it is specifically the react-hot-toast lib that needs matchMedia and jsdom which does not have a matchMedia implimentation. react-hot-toasts own project test uses this workaround. [test setup](https://github.com/timolins/react-hot-toast/blob/1f7005356bd419100541a7dcd38d79fad2a2314e/test/setup.ts#L5)
+
+[usage of matchMedia revealed here](https://github.com/timolins/react-hot-toast/blob/1f7005356bd419100541a7dcd38d79fad2a2314e/src/core/utils.ts#L12)
+
+Good info to know because if I remember correctly there will be other times where matchMedia needs to be used to check user preferred system settings such as dark/light mode and others so this won't be the first time I run into this.
