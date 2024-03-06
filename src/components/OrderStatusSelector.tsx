@@ -1,13 +1,13 @@
 import { Select } from "@radix-ui/themes";
 
-interface Props {
+type OrderStatusSelectorProps = {
   onChange: (status: string) => void;
-}
+};
 
-const OrderStatusSelector = ({ onChange }: Props) => {
+const OrderStatusSelector = ({ onChange }: OrderStatusSelectorProps) => {
   return (
     <Select.Root defaultValue="new" onValueChange={onChange}>
-      <Select.Trigger />
+      <Select.Trigger aria-label="Status" />
       <Select.Content>
         <Select.Group>
           <Select.Label>Status</Select.Label>

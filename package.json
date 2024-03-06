@@ -16,6 +16,7 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/themes": "^2.0.3",
     "@reduxjs/toolkit": "^2.2.1",
     "axios": "^1.6.7",
@@ -53,6 +54,7 @@
     "eslint-plugin-testing-library": "^6.2.0",
     "jsdom": "^24.0.0",
     "postcss": "^8.4.35",
+    "resize-observer-polyfill": "^1.5.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
     "vite": "^5.1.4",

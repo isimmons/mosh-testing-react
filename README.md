@@ -217,3 +217,22 @@ Ha! so it is specifically the react-hot-toast lib that needs matchMedia and jsdo
 [usage of matchMedia revealed here](https://github.com/timolins/react-hot-toast/blob/1f7005356bd419100541a7dcd38d79fad2a2314e/src/core/utils.ts#L12)
 
 Good info to know because if I remember correctly there will be other times where matchMedia needs to be used to check user preferred system settings such as dark/light mode and others so this won't be the first time I run into this.
+
+### 3rd party component testing
+
+OrderStatusSelector is a radix ui component. Radix components should be wrapped in a theme context provider which is provided by the radix ui library so we need to wrap the component in our tests render just like in the production app.
+
+Next problem, missing ResizeObserver API in jsdom, needed by radix ui. We use resize-observer-polyfill to fix. Install as dev dep and then see code in setup.ts. In this case we are not mocking it but putting it in the global space as a polyfill.
+
+Even though the element in the DOM is a button (why I don't like using radix or other such libs), radix gives explicit custom role of combobox. Radix also doesn't give us an aria-label so I added one to Select.Trigger which shows as the buttons aria-label (accessible text)
+
+So getByRole("combobox", { name: /status/i }) works here after I add the aria-role to the trigger.
+
+FYI/FMI Select.Label is to label the group and only shows inside the options group when the box is expanded. So not the same as an aria-label for the entire dropdown selector.
+
+Again with adding things that jsdom does not have
+[hasPointerCapture](https://github.com/testing-library/user-event/discussions/1087)
+
+I didn't see a point in moving the getting of the options into the helper function since we only use it once. But if the tests get complicated in the future, we can return a function getOptions() and await and call it at the appropriate time in our tests.
+
+'New' being the default option we can not select it without first selecting another option, then triggering the dropdown again and selecting the new option. So this one has to be done separate but the other 2 options are a good candidate for parameterised test.
