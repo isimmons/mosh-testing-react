@@ -175,3 +175,17 @@ expect(button).toHaveTextContent(/more/i); // definitely redundant
 
 Notice in TermsAndConditions by introducing a factory to render the component and return all of the
 nessessary elements for test, we have greatly simplified the individual test case. As mentioned before, getByRole will throw an error, and each element has at least one test for which we need the element so we can safely remove the toBeInTheDocument assertion from all 3 and the test is still solid and it is still easy to see what we are testing for.
+
+### Exercise testing SearchBox
+
+I felt the code was messy and difficult to read so I moved the keyDown handler code to an explicitly defined handleKeyDown handler function. No big, just preference.
+
+Finally a good example of how getByRole encourages correct accessibility markup. Changed type text to type search and added aria-label which is found as the accessible name property in getByRole.
+[MDN Docs](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/searchbox_role)
+
+And Mosh chooses this very moment to use something else instead of getByRole lol.
+I think Mosh assumes we all know the benifits of getByRole by this point and wants to show us something new. But to me this is the first demonstartion of the actual benifit vs annoyance of using getByRole because it forced me to refactor the production code to follow better accessibility practice. So I'm going to leave it using getByRole.
+
+I also don't think getByPlaceHolder is a very solid test as I see placeholder text as something of very little importance and more likely to change than label text. It is something usually put in as an after thought and therefore ends up getting corrected later after more important things are reviewed/refactored. Then all of a sudden the test breaks because we tested based on placeholder text. I have a strong opinion on this. Sorry, Not Sorry :-)
+
+I feel better after googling. I is not alone... I think I could actually do a proper write up on this topic without sounding dumb. hmm... need to think on that.

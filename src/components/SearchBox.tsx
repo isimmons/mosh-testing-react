@@ -1,22 +1,25 @@
-import { useState } from "react";
+import { useState, type KeyboardEventHandler } from "react";
 
-interface Props {
+type SearchBoxProps = {
   onChange: (text: string) => void;
-}
+};
 
-const SearchBox = ({ onChange }: Props) => {
+const SearchBox = ({ onChange }: SearchBoxProps) => {
   const [searchTerm, setSearchTerm] = useState("");
+
+  const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.key === "Enter" && searchTerm) onChange(searchTerm);
+  };
 
   return (
     <div>
       <input
-        type="text"
+        type="search"
+        aria-label="search"
         placeholder="Search..."
         className="input"
         onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && searchTerm) onChange(searchTerm);
-        }}
+        onKeyDown={handleKeyDown}
       />
     </div>
   );
