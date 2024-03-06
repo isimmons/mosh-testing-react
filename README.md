@@ -189,3 +189,9 @@ I think Mosh assumes we all know the benifits of getByRole by this point and wan
 I also don't think getByPlaceHolder is a very solid test as I see placeholder text as something of very little importance and more likely to change than label text. It is something usually put in as an after thought and therefore ends up getting corrected later after more important things are reviewed/refactored. Then all of a sudden the test breaks because we tested based on placeholder text. I have a strong opinion on this. Sorry, Not Sorry :-)
 
 I feel better after googling. I is not alone... I think I could actually do a proper write up on this topic without sounding dumb. hmm... need to think on that.
+
+### Testing async code TagList
+
+As Mosh brings up and is also in the artilcle I linked above by Kent C Dodds, side effects should NOT be included in the callback for waitFor. In this case the render function is the side effect. Other example in Kent's article. We don't want the side effect to be called multiple times which is what waitFor does with the callback. Also we should have a single assertion inside the callback. Once we have awaited for example an assertion that foo is in the document, then outside and after the waitFor, we can assert everything else that relies on the existense of foo in the document.
+
+Avoid the complexity when waitFor is not needed. Also mentioned by both Kent and Mosh is the fact that findBy* functions use waitFor under the hood. But they are much simpler to write and provide better error messages when there is an error. So prefer to use findBy* methods over waitFor when waitFor is not needed. Examples later in course where waitFor makes sense.
