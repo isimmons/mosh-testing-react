@@ -220,6 +220,9 @@ Good info to know because if I remember correctly there will be other times wher
 
 ### 3rd party component testing
 
+Correction here. OrderStatusSelector it's self is our custom selector. We are using the radix-ui select component as the main part of it. The tests we run on this are not actually testing the radix-ui component but our usage of it to build our own custom selector component. The tests only test that our custom options values and our custom onChange function are used and called correctly.
+Keep that in mind. We do not want to actually test the 3rd party lib but we want to test our lib/component/function and how it uses the 3rd party lib/component
+
 OrderStatusSelector is a radix ui component. Radix components should be wrapped in a theme context provider which is provided by the radix ui library so we need to wrap the component in our tests render just like in the production app.
 
 Next problem, missing ResizeObserver API in jsdom, needed by radix ui. We use resize-observer-polyfill to fix. Install as dev dep and then see code in setup.ts. In this case we are not mocking it but putting it in the global space as a polyfill.
