@@ -239,3 +239,22 @@ Again with adding things that jsdom does not have
 I didn't see a point in moving the getting of the options into the helper function since we only use it once. But if the tests get complicated in the future, we can return a function getOptions() and await and call it at the appropriate time in our tests.
 
 'New' being the default option we can not select it without first selecting another option, then triggering the dropdown again and selecting the new option. So this one has to be done separate but the other 2 options are a good candidate for parameterised test.
+
+# Mocking APIs!
+
+Rather than mock axios or fetch APIs for example, we can mock the server response using MSW which will intercept real requests and respond to them with our mocked response. This way the response stays the same and our tests don't break if and when we change out our client side fetching lib.
+
+## MSW
+
+The basics. See tests/mocks/handlers.ts
+Declare an array of handlers/endpoints. Each one consists of a http.method handler which takes a route and a handler function. The handler function handles the request by returning an HttpResponse.json object which is an array of data objects in json format.
+
+Then we use setupServer from msw/node (see tests/mocks/server.ts). Then go to the setup file and start the server before all requests, reset handlers after each test, and then close the server after all requests, using our before and after hooks.
+
+### sidenote for typing fetch requests
+
+[using fetch with typescript](https://kentcdodds.com/blog/using-fetch-with-type-script)
+
+Or login here if purchased and see the TS masters solution [totaltypescript](https://www.totaltypescript.com/workshops/typescript-generics/passing-type-arguments/avoid-any-types-with-generics/solution)
+
+### end sidenote and get back to the current topic
