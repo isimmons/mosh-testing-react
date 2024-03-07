@@ -23,7 +23,7 @@ describe("ProductList", () => {
     render(<ProductList />);
 
     const items = await screen.findAllByRole("listitem");
-    expect(items.length).toBeGreaterThan(0);
+    expect(items.length).toEqual(3);
   });
 
   it("should render 'no products available' if no products found", async () => {
