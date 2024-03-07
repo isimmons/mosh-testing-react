@@ -5,29 +5,31 @@ import { http, HttpResponse } from "msw";
 import { db } from "../mocks/db";
 
 describe("ProductDetail", () => {
-  const productIds: number[] = [];
+  let productId: number;
+
   beforeAll(() => {
-    [1, 2, 3].forEach(() => {
-      const product = db.product.create();
-      productIds.push(product.id);
-    });
+    const product = db.product.create();
+    productId = product.id;
   });
 
   afterAll(() => {
-    db.product.deleteMany({
-      where: { id: { in: productIds } },
+    db.product.delete({
+      where: { id: { equals: productId } },
     });
   });
 
   it("should render the product details ", async () => {
-    const products = db.product.getAll();
-    render(<ProductDetail productId={products[0].id} />);
+    const product = db.product.findFirst({
+      where: { id: { equals: productId } },
+      strict: true,
+    });
+    render(<ProductDetail productId={product.id} />);
 
     expect(
-      await screen.findByText(new RegExp(products[0].name))
+      await screen.findByText(new RegExp(product.name))
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(new RegExp(products[0].price.toString()))
+      await screen.findByText(new RegExp(product.price.toString()))
     ).toBeInTheDocument();
   });
 
