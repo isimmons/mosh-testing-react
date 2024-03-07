@@ -257,4 +257,8 @@ Then we use setupServer from msw/node (see tests/mocks/server.ts). Then go to th
 
 Or login here if purchased and see the TS masters solution [totaltypescript](https://www.totaltypescript.com/workshops/typescript-generics/passing-type-arguments/avoid-any-types-with-generics/solution)
 
-### end sidenote and get back to the current topic
+The handlers defined in handlers.ts are the default handlers for the various endpoints but as seen in ProductList.test we can override by defining a handler in the individual test
+
+No Floating Promise lint rule
+I've never seen this and I guess it's a good rule to have in place but it requires to explicitly mark
+the call in useEffect with the void keyword. Still gotta research this more but that's why I added it. Also correctly typing the axios fetch call took care of several other ts errors inside the useEffect.

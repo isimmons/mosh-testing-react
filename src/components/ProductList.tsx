@@ -8,10 +8,10 @@ const ProductList = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProducts = async (): Promise<void> => {
       try {
         setLoading(true);
-        const { data } = await axios.get("/products");
+        const { data } = await axios.get<Product[]>("/products");
         setProducts(data);
         setLoading(false);
       } catch (error) {
@@ -20,7 +20,7 @@ const ProductList = () => {
         else setError("An unexpected error occurred");
       }
     };
-    fetchProducts();
+    void fetchProducts();
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
