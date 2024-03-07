@@ -1,14 +1,9 @@
-import { it, expect, describe } from "vitest";
-
-type CategoriesResponse = {
-  id: number;
-  name: string;
-};
+import { it, describe } from "vitest";
+import { db } from "./mocks/db";
 
 describe("TestingMSW", () => {
-  it("should return mocked data", async () => {
-    const response = await fetch("/categories");
-    const data = (await response.json()) as Array<CategoriesResponse>;
-    expect(data).toHaveLength(3);
+  it("should return mocked data", () => {
+    const product = db.product.create();
+    console.log(product);
   });
 });

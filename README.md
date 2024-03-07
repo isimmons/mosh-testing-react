@@ -266,3 +266,9 @@ the call in useEffect with the void keyword. Still gotta research this more but 
 ### testing ProductDetail
 
 typed the json response and added missing dep to dep array
+
+### using mswjs/data
+
+Now instead of hard coded data we use the factory provided by mswjs/data, a companion package to msw.
+See db.ts and how I've modified ProductList.test and ProductDetail.test to create data on the fly.
+Especially pay attention to the beforeAll/afterAll hooks. It is important that we don't forget to cleanup after tests so data created in one test suite doesn't polute the global space for the next test suite. mswjs/data has several methods for querying and deleting data just like an actual db orm library (similar to prisma). We can use those in our hooks to make sure the data is restored to the state it was in before the tests start. This way we may want some data to be present from the beginning for all tests ( a default db state ) and only add specific data for specific tests but always be sure to remember and clean up after tests to restore the original state.
