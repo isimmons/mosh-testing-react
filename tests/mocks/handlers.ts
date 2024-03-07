@@ -1,19 +1,22 @@
 import { http, HttpResponse } from "msw";
+import { products, categories } from "./data";
 
 export const handlers = [
   http.get("/categories", () => {
-    return HttpResponse.json([
-      { id: 1, name: "Electronics" },
-      { id: 2, name: "Beauty" },
-      { id: 3, name: "Gardening" },
-    ]);
+    return HttpResponse.json(categories);
   }),
 
   http.get("/products", () => {
-    return HttpResponse.json([
-      { id: 1, name: "Product 1" },
-      { id: 2, name: "Product 2" },
-      { id: 3, name: "Product 3" },
-    ]);
+    return HttpResponse.json(products);
+  }),
+
+  http.get("/products/:id", ({ params }) => {
+    const { id } = params;
+    if (typeof id !== "string") throw Error("id should be of type string");
+
+    const product = products.find((p) => p.id === parseInt(id));
+    if (!product) return new HttpResponse(null, { status: 404 });
+
+    return HttpResponse.json(product);
   }),
 ];

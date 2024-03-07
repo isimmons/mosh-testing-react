@@ -262,3 +262,7 @@ The handlers defined in handlers.ts are the default handlers for the various end
 No Floating Promise lint rule
 I've never seen this and I guess it's a good rule to have in place but it requires to explicitly mark
 the call in useEffect with the void keyword. Still gotta research this more but that's why I added it. Also correctly typing the axios fetch call took care of several other ts errors inside the useEffect.
+
+### testing ProductDetail
+
+typed the json response and added missing dep to dep array
