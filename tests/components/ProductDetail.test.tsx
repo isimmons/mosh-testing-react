@@ -1,7 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import ProductDetail from "../../src/components/ProductDetail";
 import { server } from "../mocks/server";
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import { db } from "../mocks/db";
 
 describe("ProductDetail", () => {
@@ -55,5 +59,38 @@ describe("ProductDetail", () => {
     render(<ProductDetail productId={1} />);
 
     expect(await screen.findByText(/error/i)).toBeInTheDocument();
+  });
+
+  it("should render loading indicator when fetching data", async () => {
+    server.use(
+      http.get("/products/1", async () => {
+        await delay();
+        return HttpResponse.json({});
+      })
+    );
+
+    render(<ProductDetail productId={1} />);
+
+    expect(
+      await screen.findByRole("progressbar", { name: /loading products/i })
+    ).toBeInTheDocument();
+  });
+
+  it("should remove loading indicator after data is fetched", async () => {
+    render(<ProductDetail productId={1} />);
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole("progressbar", { name: /loading products/i })
+    );
+  });
+
+  it("should remove loading indicator if data fetching fails", async () => {
+    server.use(http.get("/products", () => HttpResponse.error()));
+
+    render(<ProductDetail productId={1} />);
+
+    await waitForElementToBeRemoved(() =>
+      screen.queryByRole("progressbar", { name: /loading products/i })
+    );
   });
 });

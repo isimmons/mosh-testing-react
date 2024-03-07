@@ -20,7 +20,12 @@ const ProductDetail = ({ productId }: { productId: number }) => {
       .finally(() => setLoading(false));
   }, [productId]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div role="progressbar" aria-label="loading products">
+        Loading...
+      </div>
+    );
 
   if (error) return <div>Error: {error}</div>;
 
