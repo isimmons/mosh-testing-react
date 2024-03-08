@@ -7,6 +7,7 @@ import ProductDetail from "../../src/components/ProductDetail";
 import { server } from "../mocks/server";
 import { delay, http, HttpResponse } from "msw";
 import { db } from "../mocks/db";
+import AllProviders from "../AllProviders";
 
 describe("ProductDetail", () => {
   let productId: number;
@@ -27,7 +28,7 @@ describe("ProductDetail", () => {
       where: { id: { equals: productId } },
       strict: true,
     });
-    render(<ProductDetail productId={product.id} />);
+    render(<ProductDetail productId={product.id} />, { wrapper: AllProviders });
 
     expect(
       await screen.findByText(new RegExp(product.name))
@@ -42,13 +43,13 @@ describe("ProductDetail", () => {
       http.get("/products/1", () => HttpResponse.json(null, { status: 404 }))
     );
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     expect(await screen.findByText(/not found/i)).toBeInTheDocument();
   });
 
   it("should render error if productId is invalid ", async () => {
-    render(<ProductDetail productId={0} />);
+    render(<ProductDetail productId={0} />, { wrapper: AllProviders });
 
     expect(await screen.findByText(/invalid/i)).toBeInTheDocument();
   });
@@ -56,7 +57,7 @@ describe("ProductDetail", () => {
   it("should render an error if data fetching fails", async () => {
     server.use(http.get("/products/1", () => HttpResponse.error()));
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     expect(await screen.findByText(/error/i)).toBeInTheDocument();
   });
@@ -69,7 +70,7 @@ describe("ProductDetail", () => {
       })
     );
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     expect(
       await screen.findByRole("progressbar", { name: /loading products/i })
@@ -77,7 +78,7 @@ describe("ProductDetail", () => {
   });
 
   it("should remove loading indicator after data is fetched", async () => {
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() =>
       screen.queryByRole("progressbar", { name: /loading products/i })
@@ -87,7 +88,7 @@ describe("ProductDetail", () => {
   it("should remove loading indicator if data fetching fails", async () => {
     server.use(http.get("/products", () => HttpResponse.error()));
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() =>
       screen.queryByRole("progressbar", { name: /loading products/i })

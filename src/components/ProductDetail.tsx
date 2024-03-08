@@ -1,24 +1,40 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { Product } from "../entities";
+import { useQuery } from "react-query";
+import axios, { type AxiosError } from "axios";
 
 const ProductDetail = ({ productId }: { productId: number }) => {
-  const [product, setProduct] = useState<Product | undefined>(undefined);
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const {
+    data: product,
+    isLoading,
+    error,
+  } = useQuery<Product, AxiosError>({
+    queryKey: ["products", "productId"],
+    queryFn: () =>
+      axios
+        .get<Product>(`/products/${productId.toString()}`)
+        .then((res) => res.data),
+  });
 
-  useEffect(() => {
-    if (!productId) {
-      setError("Invalid ProductId");
-      return;
-    }
+  // const [product, setProduct] = useState<Product | undefined>(undefined);
+  // const [isLoading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
 
-    setLoading(true);
-    fetch("/products/" + productId)
-      .then((res): Promise<Product> => res.json())
-      .then((data) => setProduct(data))
-      .catch((err) => setError((err as Error).message))
-      .finally(() => setLoading(false));
-  }, [productId]);
+  // useEffect(() => {
+  //   if (!productId) {
+  //     setError("Invalid ProductId");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   fetch("/products/" + productId)
+  //     .then((res): Promise<Product> => res.json())
+  //     .then((data) => setProduct(data))
+  //     .catch((err) => setError((err as Error).message))
+  //     .finally(() => setLoading(false));
+  // }, [productId]);
+
+  if (!productId) return <div>Invalid productId</div>;
 
   if (isLoading)
     return (
@@ -27,9 +43,12 @@ const ProductDetail = ({ productId }: { productId: number }) => {
       </div>
     );
 
-  if (error) return <div>Error: {error}</div>;
+  if (error) {
+    console.log(error.message);
+    return <div>Error: The given product was not found.</div>;
+  }
 
-  if (!product) return <div>The given product was not found.</div>;
+  if (!product) return <div>Error: The given product was not found.</div>;
 
   return (
     <div>

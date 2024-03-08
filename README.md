@@ -289,3 +289,5 @@ So we modified ProductList to use react-query. The project is using an older ver
 
 I found one issue with the older version which caused some confusion at first. Two of the tests intentionally cause errors so we can test that our component displays the error message correctly. All tests are passing but above the tests in the console you'll see a log of the NetworkError for those two tests. This is because older react-query logged to console by default. [This can be disabled](https://stackoverflow.com/questions/66404728/how-do-i-suppress-expected-axios-error-messages-when-testing-error-states-with-r)
 But it is just an annoyance now since I know what it is and where it comes from. Anything new that I do will be using the latest version which does not have this behavior.
+
+For ProductDetail I had to refactor the error message part because axios returns a different error.message than what we had logic for. In a real world app I would do more parsing of the error but this demonstrates the ease of refactoring with tests.
