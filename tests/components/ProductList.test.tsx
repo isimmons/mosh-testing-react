@@ -3,11 +3,11 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { http, HttpResponse, delay } from "msw";
+import { HttpResponse, delay, http } from "msw";
 import ProductList from "../../src/components/ProductList";
-import { server } from "../mocks/server";
+import AllProviders from "../AllProviders";
 import { db } from "../mocks/db";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { server } from "../mocks/server";
 
 describe("ProductList", () => {
   const productIds: number[] = [];
@@ -24,24 +24,8 @@ describe("ProductList", () => {
     });
   });
 
-  const renderComponent = () => {
-    const client = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    render(
-      <QueryClientProvider client={client}>
-        <ProductList />
-      </QueryClientProvider>
-    );
-  };
-
   it("should render the list of products", async () => {
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     const items = await screen.findAllByRole("listitem");
     expect(items.length).toEqual(3);
@@ -50,7 +34,7 @@ describe("ProductList", () => {
   it("should render 'no products available' if no products found", async () => {
     server.use(http.get("/products", () => HttpResponse.json([])));
 
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     const message = await screen.findByText(/no products/i);
 
@@ -59,7 +43,7 @@ describe("ProductList", () => {
 
   it("should render an error message when there is an error", async () => {
     server.use(http.get("/products", () => HttpResponse.error()));
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     expect(await screen.findByText(/error/i)).toBeInTheDocument();
   });
@@ -72,7 +56,7 @@ describe("ProductList", () => {
       })
     );
 
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     const loader = await screen.findByRole("progressbar", {
       name: "color-ring-loading",
@@ -81,7 +65,7 @@ describe("ProductList", () => {
   });
 
   it("should remove loading indicator after data is fetched", async () => {
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() =>
       screen.queryByRole("progressbar", { name: "color-ring-loading" })
@@ -91,7 +75,7 @@ describe("ProductList", () => {
   it("should remove loading indicator if data fetching fails", async () => {
     server.use(http.get("/products", () => HttpResponse.error()));
 
-    renderComponent();
+    render(<ProductList />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() =>
       screen.queryByRole("progressbar", { name: "color-ring-loading" })
