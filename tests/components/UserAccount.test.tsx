@@ -14,7 +14,7 @@ describe("UserAccount", () => {
     expectTypeOf(UserAccount).parameter(0).toMatchTypeOf<{ user: User }>();
   });
 
-  it("should show the users name", async () => {
+  it("should show the users name", () => {
     const user = createUser();
 
     render(<UserAccount user={user} />);
