@@ -1,6 +1,6 @@
 import { Select, Table } from "@radix-ui/themes";
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import QuantitySelector from "../components/QuantitySelector";
@@ -12,44 +12,20 @@ function BrowseProducts() {
     queryKey: ["categories"],
     queryFn: () => axios.get<Category[]>("/categories").then((res) => res.data),
   });
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isProductsLoading, setProductsLoading] = useState(false);
-  const [errorProducts, setErrorProducts] = useState("");
+
+  const productsQuery = useQuery<Product[], AxiosError>({
+    queryKey: ["products"],
+    queryFn: () => axios.get<Product[]>("/products").then((res) => res.data),
+  });
+
   const [selectedCategoryId, setSelectedCategoryId] = useState<
     number | undefined
   >();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setProductsLoading(true);
-        const { data } = await axios.get<Product[]>("/products");
-        setProducts(data);
-      } catch (error) {
-        if (error instanceof AxiosError) setErrorProducts(error.message);
-        else setErrorProducts("An unexpected error occurred");
-      } finally {
-        setProductsLoading(false);
-      }
-    };
-
-    // const fetchCategories = async () => {
-    //   try {
-    //     setCategoriesLoading(true);
-    //     const { data } = await axios.get<Category[]>("/categories");
-    //     setCategories(data);
-    //   } catch (error) {
-    //     if (error instanceof AxiosError) setErrorCategories(error.message);
-    //     else setErrorCategories("An unexpected error occurred");
-    //   } finally {
-    //     setCategoriesLoading(false);
-    //   }
-    // };
-    // void fetchCategories();
-    void fetchProducts();
-  }, []);
-
-  if (errorProducts) return <div>Error: {errorProducts}</div>;
+  // this one stops us from having an error in the products component and will
+  // cause a blank page with nothing but the error. I think it needs to go.
+  // all tests pass after removing.
+  // if (productsQuery.error) return <div>Error: {productsQuery.error.message}</div>;
 
   const renderCategories = () => {
     const { data: categories, isLoading, error } = categoriesQuery;
@@ -85,12 +61,13 @@ function BrowseProducts() {
   };
 
   const renderProducts = () => {
+    const { data: products, error, isLoading } = productsQuery;
     const skeletons = [1, 2, 3, 4, 5];
 
-    if (errorProducts) return <div>Error: {errorProducts}</div>;
+    if (error) return <div>Error: {error.message}</div>;
 
     const visibleProducts = selectedCategoryId
-      ? products.filter((p) => p.categoryId === selectedCategoryId)
+      ? products!.filter((p) => p.categoryId === selectedCategoryId)
       : products;
 
     return (
@@ -103,10 +80,10 @@ function BrowseProducts() {
           </Table.Row>
         </Table.Header>
         <Table.Body
-          role={isProductsLoading ? "progressbar" : undefined}
-          aria-label={isProductsLoading ? "Loading products" : undefined}
+          role={isLoading ? "progressbar" : undefined}
+          aria-label={isLoading ? "Loading products" : undefined}
         >
-          {isProductsLoading &&
+          {isLoading &&
             skeletons.map((skeleton) => (
               <Table.Row key={skeleton}>
                 <Table.Cell>
@@ -120,8 +97,8 @@ function BrowseProducts() {
                 </Table.Cell>
               </Table.Row>
             ))}
-          {!isProductsLoading &&
-            visibleProducts.map((product) => (
+          {!isLoading &&
+            visibleProducts!.map((product) => (
               <Table.Row key={product.id}>
                 <Table.Cell>{product.name}</Table.Cell>
                 <Table.Cell>${product.price}</Table.Cell>
