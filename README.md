@@ -291,3 +291,7 @@ I found one issue with the older version which caused some confusion at first. T
 But it is just an annoyance now since I know what it is and where it comes from. Anything new that I do will be using the latest version which does not have this behavior.
 
 For ProductDetail I had to refactor the error message part because axios returns a different error.message than what we had logic for. In a real world app I would do more parsing of the error but this demonstrates the ease of refactoring with tests.
+
+### refactoring BrowerProductsPage test
+
+We did a lot of refactoring here and extracting out to functions. I need to come back and write more about it. But for now I'll say the one thing that threw me for a loop was when we moved the renderComponent function to the bottom of the file. My first thought is that this shouldn't work because it is an arrow function and should not be hoisted. After some thought, I think what is going on here is that the function is outside the test suite which puts it in the scope of the file. The file contents all get loaded and then the suite runs so the function is available for use inside the suite. I need to experiment around with a smaller test case to feel sure of this.
