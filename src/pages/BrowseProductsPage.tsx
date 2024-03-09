@@ -5,14 +5,16 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import QuantitySelector from "../components/QuantitySelector";
 import { Category, Product } from "../entities";
+import { useQuery } from "react-query";
 
 function BrowseProducts() {
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => axios.get<Category[]>("/categories").then((res) => res.data),
+  });
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isProductsLoading, setProductsLoading] = useState(false);
-  const [isCategoriesLoading, setCategoriesLoading] = useState(false);
   const [errorProducts, setErrorProducts] = useState("");
-  const [errorCategories, setErrorCategories] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<
     number | undefined
   >();
@@ -31,32 +33,35 @@ function BrowseProducts() {
       }
     };
 
-    const fetchCategories = async () => {
-      try {
-        setCategoriesLoading(true);
-        const { data } = await axios.get<Category[]>("/categories");
-        setCategories(data);
-      } catch (error) {
-        if (error instanceof AxiosError) setErrorCategories(error.message);
-        else setErrorCategories("An unexpected error occurred");
-      } finally {
-        setCategoriesLoading(false);
-      }
-    };
-    void fetchCategories();
+    // const fetchCategories = async () => {
+    //   try {
+    //     setCategoriesLoading(true);
+    //     const { data } = await axios.get<Category[]>("/categories");
+    //     setCategories(data);
+    //   } catch (error) {
+    //     if (error instanceof AxiosError) setErrorCategories(error.message);
+    //     else setErrorCategories("An unexpected error occurred");
+    //   } finally {
+    //     setCategoriesLoading(false);
+    //   }
+    // };
+    // void fetchCategories();
     void fetchProducts();
   }, []);
 
   if (errorProducts) return <div>Error: {errorProducts}</div>;
 
   const renderCategories = () => {
-    if (isCategoriesLoading)
+    const { data: categories, isLoading, error } = categoriesQuery;
+    if (isLoading)
       return (
         <div role="progressbar" aria-label="loading categories">
           <Skeleton />
         </div>
       );
-    if (errorCategories) return null;
+
+    if (error) return null;
+
     return (
       <Select.Root
         onValueChange={(categoryId) =>
