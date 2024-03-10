@@ -14,6 +14,7 @@ const ProductTable = ({ selectedCategoryId }: ProductTableProps) => {
     queryKey: ["products"],
     queryFn: () => axios.get<Product[]>("/products").then((res) => res.data),
   });
+
   const { data: products, error, isLoading } = productsQuery;
   const skeletons = [1, 2, 3, 4, 5];
 
