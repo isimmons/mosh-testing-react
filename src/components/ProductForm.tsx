@@ -52,10 +52,11 @@ const ProductForm = ({ product, onSubmit }: Props) => {
       <Box>
         <TextField.Root className="max-w-sm">
           <TextField.Input
+            aria-label="name"
             placeholder="Name"
+            autoFocus
             {...register("name")}
             size="3"
-            aria-label="name"
           />
         </TextField.Root>
         <ErrorMessage error={errors.name} />

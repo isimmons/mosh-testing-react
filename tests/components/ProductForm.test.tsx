@@ -19,10 +19,9 @@ describe("ProductForm", () => {
   });
 
   it("should render form fields", async () => {
-    const { waitForFormToLoad, getFormInputs } = renderForm();
-    await waitForFormToLoad();
+    const { waitForFormToLoad } = renderForm();
 
-    const { nameInput, priceInput, categoryInput } = getFormInputs();
+    const { nameInput, priceInput, categoryInput } = await waitForFormToLoad();
 
     expect(nameInput).toBeInTheDocument();
     expect(priceInput).toBeInTheDocument();
@@ -30,13 +29,21 @@ describe("ProductForm", () => {
   });
 
   it("should populate form fields when editing a product", async () => {
-    const { waitForFormToLoad, getFormInputs } = renderForm(product);
-    await waitForFormToLoad();
-    const { nameInput, priceInput, categoryInput } = getFormInputs();
+    const { waitForFormToLoad } = renderForm(product);
+
+    const { nameInput, priceInput, categoryInput } = await waitForFormToLoad();
 
     expect(nameInput).toHaveValue(product.name);
     expect(priceInput).toHaveValue(product.price.toString());
     expect(categoryInput).toHaveTextContent(category.name);
+  });
+
+  it("should put focus on the name field", async () => {
+    const { waitForFormToLoad } = renderForm();
+    await waitForFormToLoad();
+    const { nameInput } = await waitForFormToLoad();
+
+    expect(nameInput).toHaveFocus();
   });
 });
 
@@ -46,8 +53,9 @@ const renderForm = (product?: Product) => {
   });
 
   return {
-    waitForFormToLoad: () => screen.findByRole("form"),
-    getFormInputs: () => {
+    waitForFormToLoad: async () => {
+      await screen.findByRole("form");
+
       return {
         nameInput: screen.getByRole("textbox", { name: /name/i }),
         priceInput: screen.getByRole("textbox", { name: /price/i }),
