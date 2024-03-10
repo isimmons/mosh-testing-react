@@ -295,3 +295,8 @@ For ProductDetail I had to refactor the error message part because axios returns
 ### refactoring BrowerProductsPage test
 
 We did a lot of refactoring here and extracting out to functions. I need to come back and write more about it. But for now I'll say the one thing that threw me for a loop was when we moved the renderComponent function to the bottom of the file. My first thought is that this shouldn't work because it is an arrow function and should not be hoisted. After some thought, I think what is going on here is that the function is outside the test suite which puts it in the scope of the file. The file contents all get loaded and then the suite runs so the function is available for use inside the suite. I need to experiment around with a smaller test case to feel sure of this.
+
+### setLogger function in setup
+
+Since we are using an older version of react-query, it by default, logs errors to the console even if we hanlde those errors and make our tests pass. So to avoid this we can setLogger and make a custom function to override the behavior. This is NOT needed after updating to v5 or greater because they no longer log errors unless they are something that needs to be addressed (also something that would cause the test to actually fail) such as incorrect queryFn or queryKey. Anser here with broken docs link but figured it out, this goes in the setup file or probably at the top of a individual test file.
+[SO](https://stackoverflow.com/questions/66404728/how-do-i-suppress-expected-axios-error-messages-when-testing-error-states-with-r)
