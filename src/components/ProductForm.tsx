@@ -35,21 +35,28 @@ const ProductForm = ({ product, onSubmit }: Props) => {
   return (
     <form
       name="product"
-      onSubmit={handleSubmit(async (formData) => {
-        try {
-          setSubmitting(true);
-          await onSubmit(formData);
-        } catch (error) {
-          toast.error("An unexpected error occurred");
-        } finally {
-          setSubmitting(false);
-        }
-      })}
+      onSubmit={() =>
+        handleSubmit(async (formData) => {
+          try {
+            setSubmitting(true);
+            await onSubmit(formData);
+          } catch (error) {
+            toast.error("An unexpected error occurred");
+          } finally {
+            setSubmitting(false);
+          }
+        })
+      }
       className="space-y-3"
     >
       <Box>
         <TextField.Root className="max-w-sm">
-          <TextField.Input placeholder="Name" {...register("name")} size="3" />
+          <TextField.Input
+            placeholder="Name"
+            {...register("name")}
+            size="3"
+            aria-label="name"
+          />
         </TextField.Root>
         <ErrorMessage error={errors.name} />
       </Box>
@@ -57,6 +64,7 @@ const ProductForm = ({ product, onSubmit }: Props) => {
         <TextField.Root className="w-24">
           <TextField.Slot>$</TextField.Slot>
           <TextField.Input
+            aria-label="price"
             placeholder="Price"
             maxLength={5}
             size="3"
@@ -75,7 +83,7 @@ const ProductForm = ({ product, onSubmit }: Props) => {
               defaultValue={product?.categoryId.toString() || ""}
               onValueChange={(value) => field.onChange(+value)}
             >
-              <Select.Trigger placeholder="Category" />
+              <Select.Trigger placeholder="Category" aria-label="category" />
               <Select.Content>
                 <Select.Group>
                   {categories?.map((category) => (

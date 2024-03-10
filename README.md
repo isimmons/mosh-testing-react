@@ -300,3 +300,11 @@ We did a lot of refactoring here and extracting out to functions. I need to come
 
 Since we are using an older version of react-query, it by default, logs errors to the console even if we hanlde those errors and make our tests pass. So to avoid this we can setLogger and make a custom function to override the behavior. This is NOT needed after updating to v5 or greater because they no longer log errors unless they are something that needs to be addressed (also something that would cause the test to actually fail) such as incorrect queryFn or queryKey. Anser here with broken docs link but figured it out, this goes in the setup file or probably at the top of a individual test file.
 [SO](https://stackoverflow.com/questions/66404728/how-do-i-suppress-expected-axios-error-messages-when-testing-error-states-with-r)
+
+### ProductForm
+
+Some will argue that the placeholder should be removed and a label added. Either way aria-label works for accessibility so I'll keep it using byRole with a name option. Mosh says the label is redundant because of the placeholder but I see it as the other way around. Of course it depends on design if you think the form is ugly with labels on all the fields. So just be sure to add aria-label.
+
+I used byRole on all 3 form elements because I want to enforce having an accessible text label or aria-label on every element. I can add tests for the placeholder if I want to test that but the placeholder text is more likely to change by design than the aria-label.
+
+If we don't cover it in the course, I need to see if I can reuse the CategorySelect and then move the test for it out of BrowseProductsPage test and into it's own test.
