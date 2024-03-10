@@ -310,3 +310,5 @@ I used byRole on all 3 form elements because I want to enforce having an accessi
 If we don't cover it in the course, I need to see if I can reuse the CategorySelect and then move the test for it out of BrowseProductsPage test and into it's own test.
 
 Not sure what to think about the refactoring done in ProductForm test. It is definitely clean and easy to read but we refactored the crap out of everything so no test has any actual testing-libray code but the final assertion function, as it is all in the renderForm function. Need to think on this and is it overkill. I even took it further than Mosh by moving the single product creation to the beforeAll hook.
+
+https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change
