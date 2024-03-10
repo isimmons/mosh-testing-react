@@ -312,3 +312,8 @@ If we don't cover it in the course, I need to see if I can reuse the CategorySel
 Not sure what to think about the refactoring done in ProductForm test. It is definitely clean and easy to read but we refactored the crap out of everything so no test has any actual testing-libray code but the final assertion function, as it is all in the renderForm function. Need to think on this and is it overkill. I even took it further than Mosh by moving the single product creation to the beforeAll hook.
 
 https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change
+
+#### fix for esling misused promise rule
+
+[In Product form onSubmit](https://stackoverflow.com/questions/74190256/eslint-promise-returning-function-provided-to-attribute-where-a-void-return-was)
+[github discussion](https://github.com/orgs/react-hook-form/discussions/8622)

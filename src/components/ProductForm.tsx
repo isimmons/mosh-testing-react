@@ -35,8 +35,8 @@ const ProductForm = ({ product, onSubmit }: Props) => {
   return (
     <form
       name="product"
-      onSubmit={() =>
-        handleSubmit(async (formData) => {
+      onSubmit={(event) =>
+        void handleSubmit(async (formData) => {
           try {
             setSubmitting(true);
             await onSubmit(formData);
@@ -45,7 +45,7 @@ const ProductForm = ({ product, onSubmit }: Props) => {
           } finally {
             setSubmitting(false);
           }
-        })
+        })(event)
       }
       className="space-y-3"
     >
