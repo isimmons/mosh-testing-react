@@ -6,13 +6,16 @@ import { db } from "../mocks/db";
 
 describe("ProductForm", () => {
   let category: Category;
+  let product: Product;
 
   beforeAll(() => {
     category = db.category.create();
+    product = db.product.create({ categoryId: category.id });
   });
 
   afterAll(() => {
     db.category.delete({ where: { id: { equals: category.id } } });
+    db.product.delete({ where: { id: { equals: product.id } } });
   });
 
   it("should render form fields", async () => {
@@ -27,13 +30,6 @@ describe("ProductForm", () => {
   });
 
   it("should populate form fields when editing a product", async () => {
-    const product: Product = {
-      id: 1,
-      name: "Bread",
-      price: 10,
-      categoryId: category.id,
-    };
-
     const { waitForFormToLoad, getFormInputs } = renderForm(product);
     await waitForFormToLoad();
     const { nameInput, priceInput, categoryInput } = getFormInputs();

@@ -308,3 +308,5 @@ Some will argue that the placeholder should be removed and a label added. Either
 I used byRole on all 3 form elements because I want to enforce having an accessible text label or aria-label on every element. I can add tests for the placeholder if I want to test that but the placeholder text is more likely to change by design than the aria-label.
 
 If we don't cover it in the course, I need to see if I can reuse the CategorySelect and then move the test for it out of BrowseProductsPage test and into it's own test.
+
+Not sure what to think about the refactoring done in ProductForm test. It is definitely clean and easy to read but we refactored the crap out of everything so no test has any actual testing-libray code but the final assertion function, as it is all in the renderForm function. Need to think on this and is it overkill. I even took it further than Mosh by moving the single product creation to the beforeAll hook.
