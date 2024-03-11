@@ -317,3 +317,5 @@ https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change
 
 [In Product form onSubmit](https://stackoverflow.com/questions/74190256/eslint-promise-returning-function-provided-to-attribute-where-a-void-return-was)
 [github discussion](https://github.com/orgs/react-hook-form/discussions/8622)
+
+https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
