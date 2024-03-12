@@ -53,6 +53,11 @@ describe("ProductForm", () => {
       errorMessage: /required/i,
     },
     {
+      scenario: "empty string",
+      name: " ",
+      errorMessage: /required/i,
+    },
+    {
       scenario: "longer than 255 characters",
       name: "a".repeat(256),
       errorMessage: /255/i,
@@ -126,6 +131,33 @@ describe("ProductForm", () => {
     const toast = await screen.findByRole("status");
     expect(toast).toBeInTheDocument();
     expect(toast).toHaveTextContent(/error/i);
+  });
+
+  it("should disable the submit button upon submission", async () => {
+    const { waitForFormToLoad, onSubmit } = renderForm();
+    onSubmit.mockReturnValue(new Promise(() => {}));
+    const form = await waitForFormToLoad();
+    await form.fill(form.validData);
+
+    expect(form.submitButton).toBeDisabled();
+  });
+
+  it("should re-enable the submit button after submission", async () => {
+    const { waitForFormToLoad, onSubmit } = renderForm();
+    onSubmit.mockResolvedValue({});
+    const form = await waitForFormToLoad();
+    await form.fill(form.validData);
+
+    expect(form.submitButton).toBeEnabled();
+  });
+
+  it("should re-enable the submit button if submission fails", async () => {
+    const { waitForFormToLoad, onSubmit } = renderForm();
+    onSubmit.mockRejectedValue({});
+    const form = await waitForFormToLoad();
+    await form.fill(form.validData);
+
+    expect(form.submitButton).toBeEnabled();
   });
 });
 
