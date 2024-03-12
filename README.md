@@ -319,3 +319,13 @@ https://kentcdodds.com/blog/making-your-ui-tests-resilient-to-change
 [github discussion](https://github.com/orgs/react-hook-form/discussions/8622)
 
 https://kentcdodds.com/blog/fix-the-not-wrapped-in-act-warning
+
+The act() warning:
+None of the online resources (even Kent's ) helped me resolve this issue. It turns out
+there is something going on with radix-ui select that is causing this and the fix is to call
+user.tab() before calling click on the categories select. It is a temp solution and maybe
+we can find the real solution later but for now it gets rid of the warnings. Mosh says this only happens with Radix-ui select specifically. We don't have this problem with regular selects and other component lib selects. I also tried moving this section around in the test to change the order in which fields are filled and tried removing the autofocus on the name field and nothing changes. I wonder if it is actually related to focus or tabbing or if it is just coincidental that calling this method first makes the warnings go away. IDK and neither does Mosh at this point. Oh well, I hate radix ui anyway. But that's another story.
+
+Supressing lint warnings for type:
+See type ProductData in ProductForm test.
+The correct type is only 4 lines long. I am not making it explicit 'any' and supressing the lint warning for this when the correct type is so easy.
