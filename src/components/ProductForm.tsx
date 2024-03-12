@@ -81,7 +81,6 @@ const ProductForm = ({ product, onSubmit }: Props) => {
           render={({ field }) => (
             <Select.Root
               size="3"
-              defaultValue={product?.categoryId.toString() || ""}
               onValueChange={(value) => field.onChange(+value)}
             >
               <Select.Trigger placeholder="Category" aria-label="category" />
