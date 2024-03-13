@@ -329,3 +329,33 @@ we can find the real solution later but for now it gets rid of the warnings. Mos
 Supressing lint warnings for type:
 See type ProductData in ProductForm test.
 The correct type is only 4 lines long. I am not making it explicit 'any' and supressing the lint warning for this when the correct type is so easy.
+
+### extra exercises ProductForm
+
+Whitespace bug in name field:
+Fixed by trim() in validation
+
+Category validation:
+This one is complicated. In our fill method we choose option[0] every time which is our category created at the beginning of the test file so there is no way to choose a category id with an incorrect categoryID in this manner. Even passing in invalid data does not work because it still chooses options[0]. So I decided to load the category drop down with an invalid category by overriding the msw server in this test. Well, this only works in the case of using a non numerical string. I added the invalid type message to the validator and it works for type NaN. However, empty string, undefined, and null all fail early by errors thrown by radix ui select for invalid types so it can never make it as far as the zod validation. I could and maybe should do some tests expecting toThrow for these cases but they really don't have anything to do with validation. The one test has proven that the validator works and will not accept anything that can not be considered a type number.
+
+TDD reset form:
+I found a bug in our other tests by writing this. userEven.type appends to the end of what is already in the field. I added userEvent.clear(fieldInput) before userEvent.type to fix this. In our other tests since we are validating for a string, 'foobar' and 'foobarnewtext' both pass so this did not arise in the other tests as a bug. But when resetting the form and checking the values against our validData product we pass into the fill method, it would fail because 'foobarnewtext' recieved and 'newtext' expected. This is because when we render the form with a product it prefills with the existing product. I suppose another way would be to render the form with no product as if creating a new product but we want to test that the reset is working by repopulating with original values.
+
+Also, the fill method always submits the form and I just wanted to fill it and check it without submitting it so I moved the submit call out of the fill method and back into the individual tests and added a resetButton event call to use in the reset test. I fell this is better than creating more extracted functions. But if I wanted to I could change the fill method to take a action parameter that is either the reset call or the submit call and then add a fillAndSubmit() and fillAndReset() functions that call fill and tell it to either reset or submit.
+
+I feel this test suite is getting really close to the limit where it doesn't even resemble testing-library any more but instead is a file full of extracted functions even though many of them do help readability by having better descriptive names in less lines of code. Just a little weary of continued extractions.
+
+Also I found we don't have to do
+
+```js
+const user = userEvent.setup();
+await user.click(whatever);
+```
+
+We can just call
+
+```js
+await userEvent.click(whatever);
+```
+
+We could even rename userEvent to user in the import

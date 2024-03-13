@@ -5,6 +5,8 @@ import { Category, Product } from "../../src/entities";
 import AllProviders from "../AllProviders";
 import { db } from "../mocks/db";
 import { Toaster } from "react-hot-toast";
+import { server } from "../mocks/server";
+import { HttpResponse, http } from "msw";
 
 let category: Category;
 let product: Product;
@@ -47,6 +49,35 @@ describe("ProductForm", () => {
     expect(nameInput).toHaveFocus();
   });
 
+  it("should reset the form", async () => {
+    const { waitForFormToLoad } = renderForm(product);
+
+    const {
+      nameInput,
+      priceInput,
+      categoryInput,
+      resetButton,
+      fill,
+      validData,
+    } = await waitForFormToLoad();
+
+    expect(nameInput).toHaveValue(product.name);
+    expect(priceInput).toHaveValue(product.price.toString());
+    expect(categoryInput).toHaveTextContent(category.name);
+
+    await fill(validData);
+
+    expect(nameInput).toHaveValue(validData.name);
+    expect(priceInput).toHaveValue(validData.price?.toString());
+    expect(categoryInput).toHaveTextContent(category.name);
+
+    await userEvent.click(resetButton);
+
+    expect(nameInput).toHaveValue(product.name);
+    expect(priceInput).toHaveValue(product.price.toString());
+    expect(categoryInput).toHaveTextContent(category.name);
+  });
+
   it.each([
     {
       scenario: "missing",
@@ -69,6 +100,7 @@ describe("ProductForm", () => {
 
       const form = await waitForFormToLoad();
       await form.fill({ ...form.validData, name });
+      await userEvent.click(form.submitButton);
 
       expectErrorToBeInTheDocument(errorMessage);
     }
@@ -106,15 +138,32 @@ describe("ProductForm", () => {
 
       const form = await waitForFormToLoad();
       await form.fill({ ...form.validData, price });
+      await userEvent.click(form.submitButton);
 
       expectErrorToBeInTheDocument(errorMessage);
     }
   );
 
+  it("should display an error if category id NaN", async () => {
+    server.use(
+      http.get("/categories", () =>
+        HttpResponse.json([{ id: "foo", name: "foo" }])
+      )
+    );
+    const { waitForFormToLoad, expectErrorToBeInTheDocument } = renderForm();
+
+    const form = await waitForFormToLoad();
+    await form.fill({ ...form.validData });
+    await userEvent.click(form.submitButton);
+
+    expectErrorToBeInTheDocument(/nan/i);
+  });
+
   it("should call onSubmit with the correct data", async () => {
     const { waitForFormToLoad, onSubmit } = renderForm();
     const form = await waitForFormToLoad();
     await form.fill(form.validData);
+    await userEvent.click(form.submitButton);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id, ...formData } = form.validData;
@@ -127,6 +176,7 @@ describe("ProductForm", () => {
     onSubmit.mockRejectedValue({});
     const form = await waitForFormToLoad();
     await form.fill(form.validData);
+    await userEvent.click(form.submitButton);
 
     const toast = await screen.findByRole("status");
     expect(toast).toBeInTheDocument();
@@ -138,6 +188,7 @@ describe("ProductForm", () => {
     onSubmit.mockReturnValue(new Promise(() => {}));
     const form = await waitForFormToLoad();
     await form.fill(form.validData);
+    await userEvent.click(form.submitButton);
 
     expect(form.submitButton).toBeDisabled();
   });
@@ -187,12 +238,13 @@ const renderForm = (product?: Product) => {
       const priceInput = screen.getByRole("textbox", { name: /price/i });
       const categoryInput = screen.getByRole("combobox", { name: /category/i });
       const submitButton = screen.getByRole("button", { name: /submit/i });
+      const resetButton = screen.getByRole("button", { name: /reset/i });
 
       type FormData = {
         id: number;
         name: string | undefined;
         price: number | string | undefined;
-        categoryId: number;
+        categoryId: number | string | undefined;
       };
 
       const validData: FormData = {
@@ -205,17 +257,20 @@ const renderForm = (product?: Product) => {
       const fill = async (product: FormData) => {
         const user = userEvent.setup();
 
-        if (product.name !== undefined)
+        if (product.name !== undefined) {
+          await user.clear(nameInput);
           await user.type(nameInput, product.name);
+        }
 
-        if (product.price !== undefined)
+        if (product.price !== undefined) {
+          await user.clear(priceInput);
           await user.type(priceInput, product.price.toString());
+        }
 
         await user.tab();
         await user.click(categoryInput);
         const options = screen.getAllByRole("option");
         await user.click(options[0]);
-        await user.click(submitButton);
       };
 
       return {
@@ -223,6 +278,7 @@ const renderForm = (product?: Product) => {
         priceInput,
         categoryInput,
         submitButton,
+        resetButton,
         fill,
         validData,
       };

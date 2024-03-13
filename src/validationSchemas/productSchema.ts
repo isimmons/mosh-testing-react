@@ -12,6 +12,7 @@ export const productFormSchema = z.object({
     .max(1000),
   categoryId: z.number({
     required_error: "Category is required",
+    invalid_type_error: "Category id is NaN",
   }),
 });
 

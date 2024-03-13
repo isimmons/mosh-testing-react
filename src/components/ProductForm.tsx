@@ -21,6 +21,7 @@ const ProductForm = ({ product, onSubmit }: Props) => {
   const [isSubmitting, setSubmitting] = useState(false);
 
   const {
+    reset,
     register,
     handleSubmit,
     control,
@@ -102,8 +103,16 @@ const ProductForm = ({ product, onSubmit }: Props) => {
         />
         <ErrorMessage error={errors.categoryId} />
       </Box>
-      <Button size="3" disabled={isSubmitting}>
+      <Button type="submit" size="3" disabled={isSubmitting}>
         Submit
+      </Button>
+      <Button
+        type="button"
+        size="3"
+        disabled={isSubmitting}
+        onClick={() => reset()}
+      >
+        Reset Form
       </Button>
     </form>
   );
