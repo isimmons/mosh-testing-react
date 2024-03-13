@@ -4,10 +4,11 @@
 // import ExpandableText from "../components/ExpandableText";
 // import OrderStatusSelector from "../components/OrderStatusSelector";
 // import ProductList from "../components/ProductList";
-import ProductForm from "../components/ProductForm";
+import Label from "../components/Label";
+// import ProductForm from "../components/ProductForm";
 
 const PlaygroundPage = () => {
-  return <ProductForm onSubmit={async () => {}} />;
+  return <Label labelId="welcome" />;
 };
 
 export default PlaygroundPage;

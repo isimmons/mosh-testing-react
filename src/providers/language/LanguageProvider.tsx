@@ -3,6 +3,7 @@ import { ReactNode, useState } from "react";
 import LanguageContext from "./LanguageContext";
 import en from "./data/en.json";
 import es from "./data/es.json";
+import ja from "./data/ja.json";
 import { Language } from "./type";
 
 interface Props {
@@ -18,6 +19,7 @@ export function LanguageProvider({ language, children }: Props) {
   const labelsDictionary: { [key: string]: { [key: string]: string } } = {
     en,
     es,
+    ja,
   };
 
   const getLabel = (labelId: string) => {

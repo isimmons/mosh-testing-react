@@ -359,3 +359,22 @@ await userEvent.click(whatever);
 ```
 
 We could even rename userEvent to user in the import
+
+## State Management testing
+
+Do not test the state management solution (redux, zustand, react-query, react context) directly or it will be coupled together with the solution and tests will break when we choose to change out the solution.
+As always, test the components behavior and not the implementation.
+
+### component that uses react context
+
+The useLanguage hook in Label.tsx uses a LanguageContext. This is used when we select a language from the home page language selector dropdown. Looking at useLanguage hook you can see that it must be wrapped in a LanguageProvider which is providing the language context.
+
+First bug noticed, if you pass labelId="Welcome" it throws an error because it is case sensitive. Though I'm not sure I call it a bug that it is specific. More like it's something to look into, how to make it type assisted? Or make it case insensitive and expect the end dev to determine whether the word needs to be run through a capitalize function for display. Or have both versions of every word in the dictionary. Of course there are translation packages that have already taken care of this so for now it's just a demo on how to test components that use context. Something to look into later, [json schema to type](https://www.npmjs.com/package/json-schema-to-typescript) . Create a language files compiler script and import the type in the label component for use as the labelId type.
+
+Also, looking in playground I see that Label which uses radix-ui Text just puts a span with the text in the DOM. So our only option is to look for the text in the DOM. If this was truly a label it should have a role of label and accessible label text. We can resolve this by explicitly defining the role of 'label' to the Text component returned by the Label component.
+
+Hey cool! Just figured out the each method for parameterized tests is generic so I can get some type help for language.
+
+I'm adding Japanese :-)
+
+[list of iso language codes](https://www.sitepoint.com/iso-2-letter-language-codes/)

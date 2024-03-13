@@ -1,10 +1,14 @@
 import { Text } from "@radix-ui/themes";
 import useLanguage from "../hooks/useLanguage";
 
-const Label = ({ labelId }: { labelId: string }) => {
+type LabelProps = {
+  labelId: string;
+};
+
+const Label = ({ labelId }: LabelProps) => {
   const { getLabel } = useLanguage();
 
-  return <Text>{getLabel(labelId)}</Text>;
+  return <Text role="label">{getLabel(labelId)}</Text>;
 };
 
 export default Label;
