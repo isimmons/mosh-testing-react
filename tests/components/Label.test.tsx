@@ -32,10 +32,14 @@ describe("Label", () => {
     { labelId: "new_product", language: "ja", text: "Shinseihin" },
     { labelId: "edit_product", language: "ja", text: "Seihin O Henshū Suru" },
   ])(
-    "should render $labelId in the $language language",
+    "should render $text for $labelId in language: $language",
     ({ labelId, language, text }) => {
       renderComponent(labelId, language);
       expect(screen.getByRole("label", { name: text })).toBeInTheDocument();
     }
   );
+
+  it("should throw an error if given an invalid labelId", () => {
+    expect(() => renderComponent("foobar", "en")).toThrowError();
+  });
 });

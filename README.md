@@ -378,3 +378,5 @@ Hey cool! Just figured out the each method for parameterized tests is generic so
 I'm adding Japanese :-)
 
 [list of iso language codes](https://www.sitepoint.com/iso-2-letter-language-codes/)
+
+We could write these tests in a couple of ways. This is one case where it is arguably better to use nested describe blocks. Actually starting with this simple implementation of only 3 words and 3 translation languages, the way I wrote it works great. If it gets longer and more complex I might want to go with nested describe blocks to separate the languages and if the language files get long enough I might want to extract each block to it's own test file like Label.en.test, Label.es.test, etc...
