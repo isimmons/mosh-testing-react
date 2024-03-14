@@ -380,3 +380,9 @@ I'm adding Japanese :-)
 [list of iso language codes](https://www.sitepoint.com/iso-2-letter-language-codes/)
 
 We could write these tests in a couple of ways. This is one case where it is arguably better to use nested describe blocks. Actually starting with this simple implementation of only 3 words and 3 translation languages, the way I wrote it works great. If it gets longer and more complex I might want to go with nested describe blocks to separate the languages and if the language files get long enough I might want to extract each block to it's own test file like Label.en.test, Label.es.test, etc...
+
+### testing QuantitySelector for shop cart
+
+[interesting read on accesibility and the - character](https://www.deque.com/blog/ensuring-negative-numbers-are-available-for-everyone/#:~:text=While%20color%20may%20visually%20emphasize,most%20screen%20readers%20and%20formats.)
+
+I'm thinking since this is for increment/decrement buttons maybe a good aria-label is best. Will look into it further. This works well with the aria-role="decrement item quantity". Then as before we technically don't need a toBeInTheDocument check but it looks better to have at least one assertion/expect after getting the button so we add that assertion afterwards. Instead, I added a check for toHaveTextContent("-") so my test checks that a button with the aria-label exists in the document and also has the text content of "-" for non-visually impaired users.
