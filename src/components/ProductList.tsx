@@ -1,8 +1,7 @@
 import axios, { AxiosError } from "axios";
-// import { useEffect, useState } from "react";
-import { Product } from "../entities";
 import { ColorRing } from "react-loader-spinner";
 import { useQuery } from "react-query";
+import { Product } from "../entities";
 
 const ProductList = () => {
   const {
@@ -13,26 +12,6 @@ const ProductList = () => {
     queryKey: ["products"],
     queryFn: () => axios.get<Product[]>("/products").then((res) => res.data),
   });
-
-  // const [products, setProducts] = useState<Product[]>([]);
-  // const [isLoading, setLoading] = useState(false);
-  // const [error, setError] = useState("");
-
-  // useEffect(() => {
-  //   const fetchProducts = async (): Promise<void> => {
-  //     try {
-  //       setLoading(true);
-  //       const { data } = await axios.get<Product[]>("/products");
-  //       setProducts(data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setLoading(false);
-  //       if (error instanceof AxiosError) setError(error.message);
-  //       else setError("An unexpected error occurred");
-  //     }
-  //   };
-  //   void fetchProducts();
-  // }, []);
 
   if (isLoading)
     return (

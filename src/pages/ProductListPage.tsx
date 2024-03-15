@@ -1,5 +1,5 @@
 import { Table } from "@radix-ui/themes";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import QuantitySelector from "../components/QuantitySelector";
@@ -50,9 +50,9 @@ function ProductListPage() {
 }
 
 const useProducts = () =>
-  useQuery<Product[], Error>({
+  useQuery<Product[], AxiosError>({
     queryKey: ["products"],
-    queryFn: () => axios.get("/products").then((res) => res.data),
+    queryFn: () => axios.get<Product[]>("/products").then((res) => res.data),
   });
 
 export default ProductListPage;
