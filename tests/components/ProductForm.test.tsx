@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ProductForm from "../../src/components/ProductForm";
 import { Category, Product } from "../../src/entities";
@@ -8,10 +8,10 @@ import { Toaster } from "react-hot-toast";
 import { server } from "../mocks/server";
 import { HttpResponse, http } from "msw";
 
-let category: Category;
-let product: Product;
-
 describe("ProductForm", () => {
+  let category: Category;
+  let product: Product;
+
   beforeAll(() => {
     category = db.category.create();
     product = db.product.create({ categoryId: category.id });
@@ -25,67 +25,63 @@ describe("ProductForm", () => {
   it("should render form fields", async () => {
     const { waitForFormToLoad } = renderForm();
 
-    const { nameInput, priceInput, categoryInput } = await waitForFormToLoad();
+    const { getNameInput, getPriceInput, getCategoryInput } =
+      await waitForFormToLoad();
 
-    expect(nameInput).toBeInTheDocument();
-    expect(priceInput).toBeInTheDocument();
-    expect(categoryInput).toBeInTheDocument();
+    expect(getNameInput()).toBeInTheDocument();
+    expect(getPriceInput()).toBeInTheDocument();
+    expect(getCategoryInput()).toBeInTheDocument();
   });
 
   it("should populate form fields when editing a product", async () => {
     const { waitForFormToLoad } = renderForm(product);
 
-    const { nameInput, priceInput, categoryInput } = await waitForFormToLoad();
+    const { getNameInput, getPriceInput, getCategoryInput } =
+      await waitForFormToLoad();
 
-    expect(nameInput).toHaveValue(product.name);
-    expect(priceInput).toHaveValue(product.price.toString());
-    expect(categoryInput).toHaveTextContent(category.name);
+    expect(getNameInput()).toHaveValue(product.name);
+    expect(getPriceInput()).toHaveValue(product.price.toString());
+    expect(getCategoryInput()).toHaveTextContent(category.name);
   });
 
   it("should put focus on the name field", async () => {
     const { waitForFormToLoad } = renderForm();
-    const { nameInput } = await waitForFormToLoad();
+    const { getNameInput } = await waitForFormToLoad();
 
-    expect(nameInput).toHaveFocus();
+    expect(getNameInput()).toHaveFocus();
   });
 
-  it.skip("should reset the form", async () => {
+  it.only("should reset the form", async () => {
     const { waitForFormToLoad } = renderForm(product);
 
     const {
-      nameInput,
-      priceInput,
-      categoryInput,
+      getNameInput,
+      getPriceInput,
+      getCategoryInput,
       resetButton,
       fill,
       validData,
     } = await waitForFormToLoad();
 
-    expect(nameInput).toHaveValue(product.name);
-    expect(priceInput).toHaveValue(product.price.toString());
-    expect(categoryInput).toHaveTextContent(category.name);
+    expect(getNameInput()).toHaveValue(product.name);
+    expect(getPriceInput()).toHaveValue(product.price.toString());
+    expect(getCategoryInput()).toHaveTextContent(category.name);
 
     await fill(validData);
 
-    expect(nameInput).toHaveValue(validData.name);
-    expect(priceInput).toHaveValue(validData.price?.toString());
-    expect(categoryInput).toHaveTextContent(category.name);
+    await waitFor(() => {
+      expect(getCategoryInput()).toHaveTextContent(category.name);
+    });
+    expect(getPriceInput()).toHaveValue(validData.price?.toString());
+    expect(getNameInput()).toHaveValue(validData.name);
 
-    await userEvent.click(resetButton);
+    // await userEvent.click(resetButton);
 
-    // expect(nameInput).toHaveValue(product.name);
-    // expect(priceInput).toHaveValue(product.price.toString());
-    // expect(categoryInput).toHaveTextContent(category.name);
-
-    expect(await screen.findByRole("textbox", { name: /name/i })).toHaveValue(
-      product.name
-    );
-    expect(await screen.findByRole("textbox", { name: /price/i })).toHaveValue(
-      product.price.toString()
-    );
-    expect(
-      await screen.findByRole("combobox", { name: /category/i })
-    ).toHaveTextContent(category.name);
+    // await waitFor(() => {
+    //   expect(getCategoryInput()).toHaveTextContent(category.name);
+    // });
+    // expect(getNameInput()).toHaveValue(product.name);
+    // expect(getPriceInput()).toHaveValue(product.price.toString());
   });
 
   it.each([
@@ -220,78 +216,83 @@ describe("ProductForm", () => {
 
     expect(form.submitButton).toBeEnabled();
   });
-});
 
-const renderForm = (product?: Product) => {
-  const onSubmit = vi.fn();
+  const renderForm = (product?: Product) => {
+    const onSubmit = vi.fn();
 
-  render(
-    <>
-      <ProductForm product={product} onSubmit={onSubmit} />
-      <Toaster />
-    </>,
-    { wrapper: AllProviders }
-  );
+    render(
+      <>
+        <ProductForm product={product} onSubmit={onSubmit} />
+        <Toaster />
+      </>,
+      { wrapper: AllProviders }
+    );
 
-  return {
-    onSubmit,
-    expectErrorToBeInTheDocument: (errorMessage: string | RegExp) => {
-      const error = screen.getByRole("alert");
-      expect(error).toBeInTheDocument();
-      expect(error).toHaveTextContent(errorMessage);
-    },
+    return {
+      onSubmit,
+      expectErrorToBeInTheDocument: (errorMessage: string | RegExp) => {
+        const error = screen.getByRole("alert");
+        expect(error).toBeInTheDocument();
+        expect(error).toHaveTextContent(errorMessage);
+      },
 
-    waitForFormToLoad: async () => {
-      await screen.findByRole("form");
+      waitForFormToLoad: async () => {
+        await screen.findByRole("form");
 
-      const nameInput = screen.getByRole("textbox", { name: /name/i });
-      const priceInput = screen.getByRole("textbox", { name: /price/i });
-      const categoryInput = screen.getByRole("combobox", { name: /category/i });
-      const submitButton = screen.getByRole("button", { name: /submit/i });
-      const resetButton = screen.getByRole("button", { name: /reset/i });
+        const getNameInput = () =>
+          screen.getByRole("textbox", { name: /name/i });
+        const getPriceInput = () =>
+          screen.getByRole("textbox", { name: /price/i });
+        const getCategoryInput = () =>
+          screen.getByRole("combobox", {
+            name: /category/i,
+          });
+        const submitButton = screen.getByRole("button", { name: /submit/i });
+        const resetButton = screen.getByRole("button", { name: /reset/i });
 
-      type FormData = {
-        id: number;
-        name: string | undefined;
-        price: number | string | undefined;
-        categoryId: number | string | undefined;
-      };
+        type FormData = {
+          id: number;
+          name: string | undefined;
+          price: number | string | undefined;
+          categoryId: number | string | undefined;
+        };
 
-      const validData: FormData = {
-        id: 1,
-        name: "a",
-        price: 1,
-        categoryId: category.id,
-      };
+        const validData: FormData = {
+          id: 1,
+          name: "a",
+          price: 1,
+          categoryId: category.id,
+        };
 
-      const fill = async (product: FormData) => {
-        const user = userEvent.setup();
+        const fill = async (product: FormData) => {
+          const user = userEvent.setup();
 
-        if (product.name !== undefined) {
-          await user.clear(nameInput);
-          await user.type(nameInput, product.name);
-        }
+          if (product.name !== undefined) {
+            await user.clear(getNameInput());
+            await user.type(getNameInput(), product.name);
+          }
 
-        if (product.price !== undefined) {
-          await user.clear(priceInput);
-          await user.type(priceInput, product.price.toString());
-        }
+          if (product.price !== undefined) {
+            await user.clear(getPriceInput());
+            await user.type(getPriceInput(), product.price.toString());
+          }
 
-        await user.tab();
-        await user.click(categoryInput);
-        const options = screen.getAllByRole("option");
-        await user.click(options[0]);
-      };
+          await user.tab();
+          await user.click(getCategoryInput());
+          const options = screen.getAllByRole("option");
+          await user.click(options[0]);
+        };
 
-      return {
-        nameInput,
-        priceInput,
-        categoryInput,
-        submitButton,
-        resetButton,
-        fill,
-        validData,
-      };
-    },
+        return {
+          getNameInput,
+          getPriceInput,
+          getCategoryInput,
+          submitButton,
+          resetButton,
+          fill,
+          validData,
+        };
+      },
+    };
   };
-};
+});

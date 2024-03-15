@@ -26,12 +26,11 @@ describe("BrowseProductsPage", () => {
 
   afterAll(() => {
     const categoryIds = categories.map((c) => c.id);
-    const productIds = products.map((p) => p.id);
-
     db.category.deleteMany({
       where: { id: { in: categoryIds } },
     });
 
+    const productIds = products.map((p) => p.id);
     db.product.deleteMany({
       where: { id: { in: productIds } },
     });

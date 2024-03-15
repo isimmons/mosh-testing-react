@@ -75,43 +75,41 @@ const ProductForm = ({ product, onSubmit }: Props) => {
         </TextField.Root>
         <ErrorMessage error={errors.price} />
       </Box>
-      <Box>
-        <Controller
-          name="categoryId"
-          control={control}
-          render={({ field }) => (
-            <Select.Root
-              size="3"
-              defaultValue={product?.categoryId.toString() || ""}
-              onValueChange={(value) => field.onChange(+value)}
-            >
-              <Select.Trigger placeholder="Category" aria-label="category" />
-              <Select.Content>
-                <Select.Group>
-                  {categories?.map((category) => (
-                    <Select.Item
-                      key={category.id}
-                      value={category.id.toString()}
-                    >
-                      {category.name}
-                    </Select.Item>
-                  ))}
-                </Select.Group>
-              </Select.Content>
-            </Select.Root>
-          )}
-        />
-        <ErrorMessage error={errors.categoryId} />
-      </Box>
+      {categories ? (
+        <Box>
+          <Controller
+            name="categoryId"
+            control={control}
+            render={({ field }) => (
+              <Select.Root
+                size="3"
+                defaultValue={product?.categoryId.toString() || undefined}
+                onValueChange={(value) => field.onChange(+value)}
+              >
+                <Select.Trigger aria-label="category" placeholder="Category" />
+                <Select.Content>
+                  <Select.Group>
+                    <Select.Label>Category</Select.Label>
+                    {categories.map((category) => (
+                      <Select.Item
+                        key={category.id}
+                        value={category.id.toString()}
+                      >
+                        {category.name}
+                      </Select.Item>
+                    ))}
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            )}
+          />
+          <ErrorMessage error={errors.categoryId} />
+        </Box>
+      ) : null}
       <Button type="submit" size="3" disabled={isSubmitting}>
         Submit
       </Button>
-      <Button
-        type="button"
-        size="3"
-        disabled={isSubmitting}
-        onClick={() => reset()}
-      >
+      <Button type="reset" size="3" onClick={() => reset()}>
         Reset Form
       </Button>
     </form>

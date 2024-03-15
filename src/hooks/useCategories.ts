@@ -4,6 +4,7 @@ import { Category } from "../entities";
 
 const useCategories = () => {
   return useQuery<Category[], Error>({
+    cacheTime: 0,
     queryKey: ["categories"],
     queryFn: () => axios.get<Category[]>("/categories").then((res) => res.data),
   });
