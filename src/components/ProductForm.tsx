@@ -21,7 +21,6 @@ const ProductForm = ({ product, onSubmit }: Props) => {
   const [isSubmitting, setSubmitting] = useState(false);
 
   const {
-    reset,
     register,
     handleSubmit,
     control,
@@ -54,8 +53,8 @@ const ProductForm = ({ product, onSubmit }: Props) => {
         <TextField.Root className="max-w-sm">
           <TextField.Input
             aria-label="name"
-            placeholder="Name"
             autoFocus
+            placeholder="Name"
             {...register("name")}
             size="3"
           />
@@ -75,42 +74,39 @@ const ProductForm = ({ product, onSubmit }: Props) => {
         </TextField.Root>
         <ErrorMessage error={errors.price} />
       </Box>
-      {categories ? (
-        <Box>
-          <Controller
-            name="categoryId"
-            control={control}
-            render={({ field }) => (
-              <Select.Root
-                size="3"
-                defaultValue={product?.categoryId.toString() || undefined}
-                onValueChange={(value) => field.onChange(+value)}
-              >
-                <Select.Trigger aria-label="category" placeholder="Category" />
-                <Select.Content>
-                  <Select.Group>
-                    <Select.Label>Category</Select.Label>
-                    {categories.map((category) => (
-                      <Select.Item
-                        key={category.id}
-                        value={category.id.toString()}
-                      >
-                        {category.name}
-                      </Select.Item>
-                    ))}
-                  </Select.Group>
-                </Select.Content>
-              </Select.Root>
-            )}
-          />
-          <ErrorMessage error={errors.categoryId} />
-        </Box>
-      ) : null}
+      <Box>
+        <Controller
+          name="categoryId"
+          control={control}
+          render={({ field }) => (
+            <Select.Root
+              size="3"
+              defaultValue={product?.categoryId.toString() || ""}
+              onValueChange={(value) => field.onChange(+value)}
+            >
+              <Select.Trigger aria-label="Category" placeholder="Category" />
+              <Select.Content>
+                <Select.Group>
+                  {categories?.map((category) => (
+                    <Select.Item
+                      key={category.id}
+                      value={category.id.toString()}
+                    >
+                      {category.name}
+                    </Select.Item>
+                  ))}
+                </Select.Group>
+              </Select.Content>
+            </Select.Root>
+          )}
+        />
+        <ErrorMessage error={errors.categoryId} />
+      </Box>
       <Button type="submit" size="3" disabled={isSubmitting}>
         Submit
       </Button>
-      <Button type="reset" size="3" onClick={() => reset()}>
-        Reset Form
+      <Button type="reset" size="3" disabled={isSubmitting}>
+        Reset
       </Button>
     </form>
   );

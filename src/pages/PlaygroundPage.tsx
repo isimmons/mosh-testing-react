@@ -17,8 +17,15 @@ const foo = async (product: ProductFormData) => {
   }
 };
 
+const existingProduct = {
+  id: 1,
+  name: "foo",
+  price: 2,
+  categoryId: 2,
+};
+
 const PlaygroundPage = () => {
-  return <ProductForm onSubmit={foo} />;
+  return <ProductForm product={existingProduct} onSubmit={foo} />;
 };
 
 export default PlaygroundPage;

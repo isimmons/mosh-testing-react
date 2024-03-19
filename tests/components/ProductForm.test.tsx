@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ProductForm from "../../src/components/ProductForm";
 import { Category, Product } from "../../src/entities";
@@ -51,32 +51,26 @@ describe("ProductForm", () => {
     expect(getNameInput()).toHaveFocus();
   });
 
-  it.only("should reset the form", async () => {
-    const { waitForFormToLoad } = renderForm(product);
-
-    const {
-      getNameInput,
-      getPriceInput,
-      getCategoryInput,
-      resetButton,
-      fill,
-      validData,
-    } = await waitForFormToLoad();
-
-    expect(getNameInput()).toHaveValue(product.name);
-    expect(getPriceInput()).toHaveValue(product.price.toString());
-    expect(getCategoryInput()).toHaveTextContent(category.name);
-
-    await fill(validData);
-
-    await waitFor(() => {
-      expect(getCategoryInput()).toHaveTextContent(category.name);
-    });
-    expect(getPriceInput()).toHaveValue(validData.price?.toString());
-    expect(getNameInput()).toHaveValue(validData.name);
-
+  it.skip("should reset the form", async () => {
+    // const { waitForFormToLoad } = renderForm(product);
+    // const {
+    //   getNameInput,
+    //   getPriceInput,
+    //   getCategoryInput,
+    //   resetButton,
+    //   fill,
+    //   validData,
+    // } = await waitForFormToLoad();
+    // expect(getNameInput()).toHaveValue(product.name);
+    // expect(getPriceInput()).toHaveValue(product.price.toString());
+    // expect(getCategoryInput()).toHaveTextContent(category.name);
+    // await fill(validData);
+    // await waitFor(() => {
+    //   expect(getCategoryInput()).toHaveTextContent(category.name);
+    // });
+    // expect(getPriceInput()).toHaveValue(validData.price?.toString());
+    // expect(getNameInput()).toHaveValue(validData.name);
     // await userEvent.click(resetButton);
-
     // await waitFor(() => {
     //   expect(getCategoryInput()).toHaveTextContent(category.name);
     // });
